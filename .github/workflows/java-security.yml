@@ -65,7 +65,6 @@ jobs:
           args: >
             -Dsonar.organization=ashish-0619
             -Dsonar.projectKey=Ashish-0619_devsecops
-            -Dsonar.java.binaries=target/classes
             -Dsonar.sources=java_sec/src/main/java
             -Dsonar.pullrequest.key=${{ github.event.pull_request.number }}
             -Dsonar.pullrequest.branch=${{ github.head_ref }}
