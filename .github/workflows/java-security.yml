@@ -66,8 +66,8 @@ jobs:
             -Dsonar.organization=ashish-0619 # Replace with your SonarCloud organization key
             -Dsonar.projectKey=Ashish-0619_devsecops # Replace with your SonarCloud project key
             -Dsonar.java.binaries=target/classes # Specify compiled classes for analysis
-            -Dsonar.sources=src/main/java # Specify source code directory
-            -Dsonar.tests=src/test/java # Specify test code directory (optional)
+            -Dsonar.sources=java_sec/src/main/java # Specify source code directory
+            -Dsonar.tests=java_sec/src/test/java # Specify test code directory (optional)
             -Dsonar.pullrequest.key=${{ github.event.pull_request.number }} # For PR decoration
             -Dsonar.pullrequest.branch=${{ github.head_ref }} # For PR decoration
             -Dsonar.pullrequest.base=${{ github.base_ref }} # For PR decoration
