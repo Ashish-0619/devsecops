@@ -73,6 +73,7 @@ jobs:
             -Dsonar.pullrequest.base=${{ github.base_ref }} # For PR decoration
             -Dsonar.pullrequest.github.repository=${{ github.repository }} # For PR decoration
             -Dsonar.pullrequest.github.oauth_token=${{ secrets.GITHUB_TOKEN }} # For PR decoration
+            -X
 
       #Optional: Add Trivy for more comprehensive SCA or container image scanning
       - name: Run Trivy (SCA) - Optional
