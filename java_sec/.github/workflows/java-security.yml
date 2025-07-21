@@ -1,0 +1,90 @@
+# GitHub Actions workflow for Java SAST and SCA scans.
+# This workflow is triggered on push to 'main' and pull requests to 'main'.
+
+name: Java Security Scan
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  security-scan:
+    runs-on: ubuntu-latest # Use the latest Ubuntu runner
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4 # Action to checkout your repository code
+        with:
+          fetch-depth: 0 # Required by SonarQube to analyze the entire history
+
+      - name: Set up JDK 11
+        uses: actions/setup-java@v4 # Action to set up Java Development Kit
+        with:
+          java-version: '11'
+          distribution: 'temurin' # Recommended distribution
+
+      - name: Cache Maven dependencies
+        # Caches Maven dependencies to speed up builds
+        uses: actions/cache@v4
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-
+
+      - name: Run OWASP Dependency-Check (SCA)
+        # This step runs the OWASP Dependency-Check Maven plugin.
+        # It scans for known vulnerabilities in your project's dependencies.
+        # The configuration in pom.xml determines the output format and failure threshold.
+        run: mvn org.owasp:dependency-check-maven:check
+
+      - name: Upload OWASP Dependency-Check Report
+        # Uploads the generated HTML report as a workflow artifact.
+        # You can download this report from the GitHub Actions run summary.
+        uses: actions/upload-artifact@v4
+        with:
+          name: owasp-dependency-check-report
+          path: target/dependency-check-report/dependency-check-report.html # Path to the generated report
+
+      - name: SonarCloud Scan (SAST)
+        # Integrates with SonarCloud for static code analysis.
+        # This requires a SonarCloud account and a project setup there.
+        # The SONAR_TOKEN secret must be configured in your GitHub repository.
+        uses: SonarSource/sonarcloud-github-action@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # Provided by GitHub Actions
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }} # Your SonarCloud token (set as a GitHub Secret)
+        with:
+          projectBaseDir: . # Base directory of your project
+          args: >
+            -Dsonar.organization=ashish-0619 # Replace with your SonarCloud organization key
+            -Dsonar.projectKey=your-project-key # Replace with your SonarCloud project key
+            -Dsonar.java.binaries=target/classes # Specify compiled classes for analysis
+            -Dsonar.sources=src/main/java # Specify source code directory
+            -Dsonar.tests=src/test/java # Specify test code directory (optional)
+            -Dsonar.pullrequest.key=${{ github.event.pull_request.number }} # For PR decoration
+            -Dsonar.pullrequest.branch=${{ github.head_ref }} # For PR decoration
+            -Dsonar.pullrequest.base=${{ github.base_ref }} # For PR decoration
+            -Dsonar.pullrequest.github.repository=${{ github.repository }} # For PR decoration
+            -Dsonar.pullrequest.github.oauth_token=${{ secrets.GITHUB_TOKEN }} # For PR decoration
+
+      #Optional: Add Trivy for more comprehensive SCA or container image scanning
+      - name: Run Trivy (SCA) - Optional
+        uses: aquasecurity/trivy-action@master
+        with:
+          scan-type: 'fs' # Scan the filesystem (your project directory)
+          input: '.' # Scan the current directory
+          format: 'sarif' # Output in SARIF format for GitHub Security tab
+          output: 'trivy-results.sarif'
+          severity: 'HIGH,CRITICAL' # Only report high and critical vulnerabilities
+          exit-code: '1' # Fail the workflow if vulnerabilities are found
+
+      - name: Upload Trivy SARIF report to GitHub Security tab - Optional
+        uses: github/codeql-action/upload-sarif@v3
+        if: always() # Always run this step, even if previous steps fail
+        with:
+          sarif_file: 'trivy-results.sarif'
