@@ -20,7 +20,7 @@
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-collections4</artifactId>
-            <version>4.0</version> <!-- This version has known vulnerabilities -->
+            <version>4.4</version> <!-- This version has known vulnerabilities -->
         </dependency>
         <dependency>
             <groupId>junit</groupId>
