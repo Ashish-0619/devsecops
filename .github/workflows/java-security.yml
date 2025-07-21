@@ -40,6 +40,7 @@ jobs:
         # This step runs the OWASP Dependency-Check Maven plugin.
         # It scans for known vulnerabilities in your project's dependencies.
         # The configuration in pom.xml determines the output format and failure threshold.
+        working-directory: java_sec/
         run: mvn org.owasp:dependency-check-maven:check
 
       - name: Upload OWASP Dependency-Check Report
