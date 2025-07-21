@@ -63,16 +63,15 @@ jobs:
         with:
           projectBaseDir: . # Base directory of your project
           args: >
-            -Dsonar.organization=ashish-0619 # Replace with your SonarCloud organization key
-            -Dsonar.projectKey=Ashish-0619_devsecops # Replace with your SonarCloud project key
-            -Dsonar.java.binaries=target/classes # Specify compiled classes for analysis
-            -Dsonar.sources=java_sec/src/main/java # Specify source code directory
-            -Dsonar.tests=java_sec/src/test/java # Specify test code directory (optional)
-            -Dsonar.pullrequest.key=${{ github.event.pull_request.number }} # For PR decoration
-            -Dsonar.pullrequest.branch=${{ github.head_ref }} # For PR decoration
-            -Dsonar.pullrequest.base=${{ github.base_ref }} # For PR decoration
-            -Dsonar.pullrequest.github.repository=${{ github.repository }} # For PR decoration
-            -Dsonar.pullrequest.github.oauth_token=${{ secrets.GITHUB_TOKEN }} # For PR decoration
+            -Dsonar.organization=ashish-0619
+            -Dsonar.projectKey=Ashish-0619_devsecops
+            -Dsonar.java.binaries=target/classes
+            -Dsonar.sources=java_sec/src/main/java
+            -Dsonar.pullrequest.key=${{ github.event.pull_request.number }}
+            -Dsonar.pullrequest.branch=${{ github.head_ref }}
+            -Dsonar.pullrequest.base=${{ github.base_ref }}
+            -Dsonar.pullrequest.github.repository=${{ github.repository }}
+            -Dsonar.pullrequest.github.oauth_token=${{ secrets.GITHUB_TOKEN }}
             -X
 
       #Optional: Add Trivy for more comprehensive SCA or container image scanning
