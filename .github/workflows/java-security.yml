@@ -64,7 +64,7 @@ jobs:
           projectBaseDir: . # Base directory of your project
           args: >
             -Dsonar.organization=ashish-0619 # Replace with your SonarCloud organization key
-            -Dsonar.projectKey=your-project-key # Replace with your SonarCloud project key
+            -Dsonar.projectKey=Ashish-0619_devsecops # Replace with your SonarCloud project key
             -Dsonar.java.binaries=target/classes # Specify compiled classes for analysis
             -Dsonar.sources=src/main/java # Specify source code directory
             -Dsonar.tests=src/test/java # Specify test code directory (optional)
