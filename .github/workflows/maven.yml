@@ -1,0 +1,65 @@
+# This workflow will build a Java project with Maven, and cache/restore any dependencies to improve the workflow execution time
+# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-java-with-maven
+
+# This workflow uses actions that are not certified by GitHub.
+# They are provided by a third-party and are governed by
+# separate terms of service, privacy policy, and support
+# documentation.
+
+name: Java CI with Maven
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+    - name: Set up JDK 17
+      uses: actions/setup-java@v4
+      with:
+        java-version: '17'
+        distribution: 'temurin'
+        cache: maven
+    - name: Build with Maven
+      run: mvn -B package --file pom.xml
+
+    # Optional: Uploads the full dependency graph to GitHub to improve the quality of Dependabot alerts this repository can receive
+    - name: Update dependency graph
+      uses: advanced-security/maven-dependency-submission-action@571e99aab1055c2e71a1e2309b9691de18d6b7d6
+
+
+    - name: Aqua Security Trivy
+  # You may pin to the exact commit or the version.
+  # uses: aquasecurity/trivy-action@dc5a429b52fcf669ce959baa2c2dd26090d2a6c4
+      uses: aquasecurity/trivy-action@0.32.0
+
+    - name: SonarQube Cloud Scan
+  # You may pin to the exact commit or the version.
+  # uses: SonarSource/sonarcloud-github-action@ffc3010689be73b8e5ae0c57ce35968afd7909e8
+      uses: SonarSource/sonarcloud-github-action@v5.0.0
+      with:
+        # Additional arguments to the Sonar Scanner CLI
+        args: >
+            -Dsonar.organization=ashish-0619 # Replace with your SonarCloud organization key
+            -Dsonar.projectKey=Ashish-0619_devsecops # Replace with your SonarCloud project key
+            -Dsonar.java.binaries=target/classes # Specify compiled classes for analysis
+            -Dsonar.sources=java_sec/src/main/java # Specify source code directory
+            -Dsonar.tests=java_sec/src/test/java # Specify test code directory (optional)
+            -Dsonar.pullrequest.key=${{ github.event.pull_request.number }} # For PR decoration
+            -Dsonar.pullrequest.branch=${{ github.head_ref }} # For PR decoration
+            -Dsonar.pullrequest.base=${{ github.base_ref }} # For PR decoration
+            -Dsonar.pullrequest.github.repository=${{ github.repository }} # For PR decoration
+            -Dsonar.pullrequest.github.oauth_token=${{ secrets.GITHUB_TOKEN }} # For PR decoration
+        # Set the sonar.projectBaseDir analysis property
+        projectBaseDir: .
+        # Version of the Sonar Scanner CLI to use
+
+          
+          
