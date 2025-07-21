@@ -52,6 +52,7 @@ jobs:
             -Dsonar.organization=ashish-0619
             -Dsonar.projectKey=Ashish-0619_devsecops
             -Dsonar.sources=java_sec/src/main/java
+            -Dsonar.java.binaries=/home/runner/work/devsecops/devsecops/java_sec/target/java-security-app-1.0.0.jar
             -Dsonar.pullrequest.key=${{ github.event.pull_request.number }}
             -Dsonar.pullrequest.branch=${{ github.head_ref }}
             -Dsonar.pullrequest.base=${{ github.base_ref }}
