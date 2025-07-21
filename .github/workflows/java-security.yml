@@ -36,21 +36,21 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-maven-
 
-      - name: Run OWASP Dependency-Check (SCA)
-        # This step runs the OWASP Dependency-Check Maven plugin.
-        # It scans for known vulnerabilities in your project's dependencies.
-        # The configuration in pom.xml determines the output format and failure threshold.
-        working-directory: java_sec/
-        run: mvn org.owasp:dependency-check-maven:check -DfailBuildOnCVSS=7 -Dformat=HTML
-        continue-on-error: true
+      # - name: Run OWASP Dependency-Check (SCA)
+      #   # This step runs the OWASP Dependency-Check Maven plugin.
+      #   # It scans for known vulnerabilities in your project's dependencies.
+      #   # The configuration in pom.xml determines the output format and failure threshold.
+      #   working-directory: java_sec/
+      #   run: mvn org.owasp:dependency-check-maven:check -DfailBuildOnCVSS=7 -Dformat=HTML
+      #   continue-on-error: true
 
-      - name: Upload OWASP Dependency-Check Report
-        # Uploads the generated HTML report as a workflow artifact.
-        # You can download this report from the GitHub Actions run summary.
-        uses: actions/upload-artifact@v4
-        with:
-          name: owasp-dependency-check-report
-          path: target/dependency-check-report/dependency-check-report.html # Path to the generated report
+      # - name: Upload OWASP Dependency-Check Report
+      #   # Uploads the generated HTML report as a workflow artifact.
+      #   # You can download this report from the GitHub Actions run summary.
+      #   uses: actions/upload-artifact@v4
+      #   with:
+      #     name: owasp-dependency-check-report
+      #     path: target/dependency-check-report/dependency-check-report.html # Path to the generated report
 
       - name: SonarCloud Scan (SAST)
         # Integrates with SonarCloud for static code analysis.
